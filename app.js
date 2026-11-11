@@ -6,7 +6,6 @@
   'use strict';
 
   const INITIAL_VERB = 'speak';
-  const PERSONS = ['yo', 'tú', 'él / ella / usted', 'nosotros', 'vosotros', 'ellos / ellas / ustedes'];
   // The imperative has no "yo" form, so that choice falls back to tú.
   const IMPERATIVE_LABELS = ['tú', 'tú', 'usted', 'nosotros', 'vosotros', 'ustedes'];
   const IMPERATIVE_TENSES = new Set(['impAff', 'impNeg']);
@@ -44,7 +43,7 @@
     }
   }
 
-  function renderResult(options, conjugated) {
+  function renderResult(options) {
     const title = el('p', 'translation');
     const spanish = el('strong', '', options[state.choice].es);
     spanish.lang = 'es';
@@ -60,19 +59,15 @@
       chips.append(chip);
     });
 
-    const forms = el('p', 'forms', `Gerund: ${conjugated.gerund} · Past participle: ${conjugated.participle}`);
-    forms.lang = 'es';
-
     result.replaceChildren(title);
     if (options.length > 1) result.append(chips);
     if (options[state.choice].note) result.append(el('p', 'note', options[state.choice].note));
-    result.append(forms);
   }
 
   function renderTable(conjugated) {
     const { person } = state;
     const verb = conjugated.inf[0].toUpperCase() + conjugated.inf.slice(1);
-    exampleHead.textContent = `Example (${verb} · ${PERSONS[person]})`;
+    exampleHead.textContent = `Example (${verb})`;
     exampleHead.lang = 'es';
 
     for (const cell of exampleCells) {
@@ -91,7 +86,7 @@
   function render() {
     const options = VERBS[state.english];
     const conjugated = conjugate(options[state.choice].es);
-    renderResult(options, conjugated);
+    renderResult(options);
     renderTable(conjugated);
   }
 
