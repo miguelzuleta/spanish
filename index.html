@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spanish Verb Tenses</title>
+  <style>
+    :root {
+      --indicative: #e8f1fb;
+      --subjunctive: #fdf1e3;
+      --imperative: #eaf6ec;
+      --border: #d5d9e0;
+      --text: #1f2933;
+      --muted: #52606d;
+      --header: #1f3a5f;
+      --accent: #2f6fbd;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 2rem 1rem;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      background: #f7f8fa;
+      line-height: 1.5;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 0.25rem;
+      font-size: 1.75rem;
+    }
+
+    .subtitle {
+      margin: 0 0 1.5rem;
+      color: var(--muted);
+    }
+
+    /* Verb lookup */
+    .lookup {
+      margin-bottom: 1.25rem;
+      padding: 1rem 1.25rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .lookup label,
+    .persons legend {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    #verb-input {
+      width: 100%;
+      max-width: 22rem;
+      padding: 0.55rem 0.75rem;
+      font: inherit;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    #verb-input:focus-visible,
+    .chip:focus-visible,
+    .persons input:focus-visible + span {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    #result { margin-top: 0.9rem; min-height: 3.5rem; }
+
+    .translation {
+      margin: 0 0 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    .translation .arrow { margin: 0 0.4rem; color: var(--muted); }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .chip {
+      padding: 0.3rem 0.85rem;
+      font: inherit;
+      font-weight: 600;
+      color: var(--accent);
+      background: #fff;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .chip[aria-pressed="true"] {
+      color: #fff;
+      background: var(--accent);
+    }
+
+    .note, .forms, .message {
+      margin: 0.25rem 0 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* Person selector */
+    .persons {
+      margin: 0 0 1rem;
+      padding: 0;
+      border: none;
+    }
+
+    .persons .options { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    .persons label { position: relative; margin: 0; cursor: pointer; }
+
+    .persons input {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .persons span {
+      display: inline-block;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+    }
+
+    .persons input:checked + span {
+      color: #fff;
+      background: var(--header);
+      border-color: var(--header);
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.65rem 0.9rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: var(--header);
+      color: #fff;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    tr.indicative  { background: var(--indicative); }
+    tr.subjunctive { background: var(--subjunctive); }
+    tr.imperative  { background: var(--imperative); }
+
+    tbody tr:hover { filter: brightness(0.96); }
+
+    td.mood { font-weight: 600; }
+    td.example { font-weight: 600; white-space: nowrap; }
+
+    @media (max-width: 700px) {
+      body { padding: 1rem 0.5rem; }
+      table { font-size: 0.85rem; }
+      th, td { padding: 0.5rem 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Spanish Verb Tenses</h1>
+    <p class="subtitle">Look up an English verb to see its Spanish translation and every conjugation in the table.</p>
+
+    <section class="lookup">
+      <label for="verb-input">English verb</label>
+      <input id="verb-input" type="search" list="verb-list" placeholder="Type or pick a verb, e.g. speak" autocomplete="off" spellcheck="false">
+      <datalist id="verb-list"></datalist>
+      <p class="message" id="message" aria-live="polite"></p>
+      <div id="result" aria-live="polite"></div>
+    </section>
+
+    <fieldset class="persons">
+      <legend>Show conjugation for</legend>
+      <div class="options">
+        <label><input type="radio" name="person" value="0" checked><span lang="es">yo</span></label>
+        <label><input type="radio" name="person" value="1"><span lang="es">tú</span></label>
+        <label><input type="radio" name="person" value="2"><span lang="es">él / ella / usted</span></label>
+        <label><input type="radio" name="person" value="3"><span lang="es">nosotros</span></label>
+        <label><input type="radio" name="person" value="4"><span lang="es">vosotros</span></label>
+        <label><input type="radio" name="person" value="5"><span lang="es">ellos / ellas / ustedes</span></label>
+      </div>
+    </fieldset>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Mood</th>
+            <th scope="col">Tense (English / Spanish)</th>
+            <th scope="col">Structure</th>
+            <th scope="col" id="example-head">Example (Hablar)</th>
+            <th scope="col">Primary Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Indicative -->
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Present (Presente)</td>
+            <td>Simple</td>
+            <td class="example" lang="es" data-tense="pres">hablo</td>
+            <td>Current actions, habits, general truths</td>
+          </tr>
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Preterite (Pretérito indefinido)</td>
+            <td>Simple</td>
+            <td class="example" lang="es" data-tense="pret">hablé</td>
+            <td>Completed past actions with a clear start/end</td>
+          </tr>
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Imperfect (Pretérito imperfecto)</td>
+            <td>Simple</td>
+            <td class="example" lang="es" data-tense="imperf">hablaba</td>
+            <td>Ongoing/habitual past actions, descriptions</td>
+          </tr>
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Future (Futuro simple)</td>
+            <td>Simple</td>
+            <td class="example" lang="es" data-tense="fut">hablaré</td>
+            <td>Actions that will happen later</td>
+          </tr>
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Conditional (Condicional simple)</td>
+            <td>Simple</td>
+            <td class="example" lang="es" data-tense="cond">hablaría</td>
+            <td>Hypothetical actions ("would" do something)</td>
+          </tr>
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Present Perfect (Pretérito perfecto)</td>
+            <td><span lang="es">haber</span> (pres.) + participle</td>
+            <td class="example" lang="es" data-tense="presPerf">he hablado</td>
+            <td>Past actions connected to the present</td>
+          </tr>
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Past Perfect (Pluscuamperfecto)</td>
+            <td><span lang="es">haber</span> (imp.) + participle</td>
+            <td class="example" lang="es" data-tense="pastPerf">había hablado</td>
+            <td>An action completed before another past action</td>
+          </tr>
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Preterite Anterior (Pretérito anterior)</td>
+            <td><span lang="es">haber</span> (pret.) + participle</td>
+            <td class="example" lang="es" data-tense="pretAnt">hube hablado</td>
+            <td>Archaic/literary; actions immediately before another past event</td>
+          </tr>
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Future Perfect (Futuro compuesto)</td>
+            <td><span lang="es">haber</span> (fut.) + participle</td>
+            <td class="example" lang="es" data-tense="futPerf">habré hablado</td>
+            <td>Actions that will be finished by a future point</td>
+          </tr>
+          <tr class="indicative">
+            <td class="mood">Indicative</td>
+            <td>Conditional Perfect (Condicional compuesto)</td>
+            <td><span lang="es">haber</span> (cond.) + participle</td>
+            <td class="example" lang="es" data-tense="condPerf">habría hablado</td>
+            <td>Hypothetical past actions ("would have" done)</td>
+          </tr>
+
+          <!-- Subjunctive -->
+          <tr class="subjunctive">
+            <td class="mood">Subjunctive</td>
+            <td>Present Subjunctive (Presente)</td>
+            <td>Simple</td>
+            <td class="example" lang="es" data-tense="subjPres">hable</td>
+            <td>Current or future wishes, doubts, or emotions</td>
+          </tr>
+          <tr class="subjunctive">
+            <td class="mood">Subjunctive</td>
+            <td>Imperfect Subjunctive (Imperfecto)</td>
+            <td>Simple</td>
+            <td class="example" lang="es" data-tense="subjImperf">hablara / hablase</td>
+            <td>Past doubts/wishes, unlikely hypotheticals ("If I were...")</td>
+          </tr>
+          <tr class="subjunctive">
+            <td class="mood">Subjunctive</td>
+            <td>Future Subjunctive (Futuro)</td>
+            <td>Simple</td>
+            <td class="example" lang="es" data-tense="subjFut">hablare</td>
+            <td>Obsolete; found only in old literature and legal texts</td>
+          </tr>
+          <tr class="subjunctive">
+            <td class="mood">Subjunctive</td>
+            <td>Present Perfect Subjunctive (Pretérito perfecto)</td>
+            <td><span lang="es">haber</span> (pres. subj.) + participle</td>
+            <td class="example" lang="es" data-tense="subjPresPerf">haya hablado</td>
+            <td>Doubt or emotion about a recently completed action</td>
+          </tr>
+          <tr class="subjunctive">
+            <td class="mood">Subjunctive</td>
+            <td>Pluperfect Subjunctive (Pluscuamperfecto)</td>
+            <td><span lang="es">haber</span> (imp. subj.) + participle</td>
+            <td class="example" lang="es" data-tense="subjPluperf">hubiera hablado</td>
+            <td>Past regrets or impossible past conditions ("If I had...")</td>
+          </tr>
+          <tr class="subjunctive">
+            <td class="mood">Subjunctive</td>
+            <td>Future Perfect Subjunctive (Futuro compuesto)</td>
+            <td><span lang="es">haber</span> (fut. subj.) + participle</td>
+            <td class="example" lang="es" data-tense="subjFutPerf">hubiere hablado</td>
+            <td>Obsolete; found only in archaic legal contexts</td>
+          </tr>
+
+          <!-- Imperative -->
+          <tr class="imperative">
+            <td class="mood">Imperative</td>
+            <td>Affirmative Imperative (Imperativo afirmativo)</td>
+            <td>Simple</td>
+            <td class="example" lang="es" data-tense="impAff">habla (tú)</td>
+            <td>Telling someone to do something</td>
+          </tr>
+          <tr class="imperative">
+            <td class="mood">Imperative</td>
+            <td>Negative Imperative (Imperativo negativo)</td>
+            <td>Simple (uses subj. forms)</td>
+            <td class="example" lang="es" data-tense="impNeg">no hables (tú)</td>
+            <td>Telling someone not to do something</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="conjugate.js"></script>
+  <script src="verbs.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
