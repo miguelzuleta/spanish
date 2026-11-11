@@ -10,6 +10,8 @@
   // The imperative has no "yo" form, so that choice falls back to tú.
   const IMPERATIVE_LABELS = ['tú', 'tú', 'usted', 'nosotros', 'vosotros', 'ustedes'];
   const IMPERATIVE_TENSES = new Set(['impAff', 'impNeg']);
+  // Rows shown by default; every other tense appears when the button is pressed.
+  const CORE_TENSES = new Set(['pres', 'pret', 'fut']);
 
   const input = document.getElementById('verb-input');
   const datalist = document.getElementById('verb-list');
@@ -18,9 +20,13 @@
   const exampleHead = document.getElementById('example-head');
   const exampleCells = document.querySelectorAll('td[data-tense]');
   const personRadios = document.querySelectorAll('input[name="person"]');
+  const toggle = document.getElementById('toggle-tenses');
+  const extraRows = [...exampleCells]
+    .filter(cell => !CORE_TENSES.has(cell.dataset.tense))
+    .map(cell => cell.closest('tr'));
 
   const englishVerbs = Object.keys(VERBS).sort();
-  const state = { english: INITIAL_VERB, choice: 0, person: 0 };
+  const state = { english: INITIAL_VERB, choice: 0, person: 0, expanded: false };
 
   function el(tag, className, text) {
     const node = document.createElement(tag);
@@ -76,6 +82,12 @@
     }
   }
 
+  function renderTenseVisibility() {
+    extraRows.forEach(row => { row.hidden = !state.expanded; });
+    toggle.textContent = state.expanded ? 'Show fewer tenses' : `Show ${extraRows.length} more tenses`;
+    toggle.setAttribute('aria-expanded', String(state.expanded));
+  }
+
   function render() {
     const options = VERBS[state.english];
     const conjugated = conjugate(options[state.choice].es);
@@ -104,5 +116,10 @@
     state.person = Number(radio.value);
     render();
   }));
+  toggle.addEventListener('click', () => {
+    state.expanded = !state.expanded;
+    renderTenseVisibility();
+  });
+  renderTenseVisibility();
   render();
 })();
