@@ -23,16 +23,20 @@
       gobernar helar herir hervir invertir mentir negar nevar pensar perder plegar
       preferir quebrar recomendar referir regar requerir sembrar sentir sugerir
       tender advertir verter ascender asentir consentir descender desconcertar
-      desplegar digerir reventar serrar temblar tentar transferir tropezar`),
+      desplegar digerir reventar serrar temblar tentar transferir tropezar adherir
+      contender enmendar fregar inferir ingerir interferir precalentar remendar
+      restregar revertir trascender desenterrar`),
     'o>ue': list(`
       absolver aprobar apostar almorzar colgar comprobar contar costar demostrar
       devolver disolver doler dormir encontrar envolver forzar llover moler morder
       morir mostrar mover probar recordar renovar resolver revolver rodar rogar
       soltar sonar soñar torcer volar volver acordar consolar demoler desenvolver
-      poblar promover reforzar remover resonar retorcer soldar tostar volcar`),
+      poblar promover reforzar remover resonar retorcer soldar tostar volcar colar tronar`),
     'e>i': list(`
       competir conseguir corregir derretir despedir elegir impedir medir pedir
-      perseguir rendir repetir seguir servir vestir desvestir gemir`),
+      perseguir rendir repetir seguir servir vestir desvestir gemir ceñir concebir
+      embestir regir reñir teñir`),
+    'e>ye': ['errar'],
     'u>ue': ['jugar'],
     'i>ie': ['adquirir'],
     'o>hue': ['oler'],
@@ -49,8 +53,12 @@
 
   // Verbs that write an accent on the stressed stem vowel (enviar -> envío).
   const STRESSED_ACCENT = {
-    i: list('enviar ampliar guiar variar confiar criar prohibir desafiar vaciar espiar rociar enfriar aislar'),
-    u: list('actuar continuar evaluar reunir graduar atenuar interactuar aullar'),
+    i: list(`
+      enviar ampliar guiar variar confiar criar prohibir desafiar vaciar espiar rociar
+      enfriar aislar desviar extraviar fotografiar esquiar radiografiar`),
+    u: list(`
+      actuar continuar evaluar reunir graduar atenuar interactuar aullar insinuar
+      maullar perpetuar puntuar tatuar`),
   };
   const ACCENT_OF = {};
   for (const [vowel, verbs] of Object.entries(STRESSED_ACCENT)) {

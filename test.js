@@ -496,6 +496,111 @@ const EXPECTED = {
   desoír: {
     pres: 'desoigo, desoyes, desoye, desoímos, desoís, desoyen',
   },
+  errar: {
+    pres: 'yerro, yerras, yerra, erramos, erráis, yerran',
+    subjPres: 'yerre, yerres, yerre, erremos, erréis, yerren',
+  },
+  // -ñir / -llir verbs absorb the i of -ió, -ieron and -iendo.
+  teñir: {
+    pres: 'tiño, tiñes, tiñe, teñimos, teñís, tiñen',
+    pret: 'teñí, teñiste, tiñó, teñimos, teñisteis, tiñeron',
+    subjPres: 'tiña, tiñas, tiña, tiñamos, tiñáis, tiñan',
+    subjImperf: 'tiñera / tiñese, tiñeras / tiñeses, tiñera / tiñese, tiñéramos / tiñésemos, tiñerais / tiñeseis, tiñeran / tiñesen',
+    gerund: 'tiñendo', participle: 'teñido',
+  },
+  gruñir: {
+    pret: 'gruñí, gruñiste, gruñó, gruñimos, gruñisteis, gruñeron',
+    gerund: 'gruñendo',
+  },
+  bullir: {
+    pret: 'bullí, bulliste, bulló, bullimos, bullisteis, bulleron',
+    gerund: 'bullendo',
+  },
+  concebir: {
+    pres: 'concibo, concibes, concibe, concebimos, concebís, conciben',
+  },
+  embestir: {
+    pres: 'embisto, embistes, embiste, embestimos, embestís, embisten',
+    pret: 'embestí, embestiste, embistió, embestimos, embestisteis, embistieron',
+  },
+  regir: {
+    pres: 'rijo, riges, rige, regimos, regís, rigen',
+    subjPres: 'rija, rijas, rija, rijamos, rijáis, rijan',
+  },
+  fregar: {
+    pres: 'friego, friegas, friega, fregamos, fregáis, friegan',
+    pret: 'fregué, fregaste, fregó, fregamos, fregasteis, fregaron',
+    subjPres: 'friegue, friegues, friegue, freguemos, freguéis, frieguen',
+  },
+  adherir: {
+    pres: 'adhiero, adhieres, adhiere, adherimos, adherís, adhieren',
+    pret: 'adherí, adheriste, adhirió, adherimos, adheristeis, adhirieron',
+  },
+  esquiar: {
+    pres: 'esquío, esquías, esquía, esquiamos, esquiáis, esquían',
+  },
+  desviar: {
+    pres: 'desvío, desvías, desvía, desviamos, desviáis, desvían',
+  },
+  puntuar: {
+    pres: 'puntúo, puntúas, puntúa, puntuamos, puntuáis, puntúan',
+  },
+  perpetuar: {
+    pres: 'perpetúo, perpetúas, perpetúa, perpetuamos, perpetuáis, perpetúan',
+  },
+  insinuar: {
+    pres: 'insinúo, insinúas, insinúa, insinuamos, insinuáis, insinúan',
+  },
+  maullar: {
+    pres: 'maúllo, maúllas, maúlla, maullamos, maulláis, maúllan',
+  },
+  colar: {
+    pres: 'cuelo, cuelas, cuela, colamos, coláis, cuelan',
+  },
+  desenterrar: {
+    pres: 'desentierro, desentierras, desentierra, desenterramos, desenterráis, desentierran',
+  },
+  trascender: {
+    pres: 'trasciendo, trasciendes, trasciende, trascendemos, trascendéis, trascienden',
+  },
+  precalentar: {
+    pres: 'precaliento, precalientas, precalienta, precalentamos, precalentáis, precalientan',
+  },
+  sobresalir: {
+    pres: 'sobresalgo, sobresales, sobresale, sobresalimos, sobresalís, sobresalen',
+    fut: 'sobresaldré, sobresaldrás, sobresaldrá, sobresaldremos, sobresaldréis, sobresaldrán',
+    impAff: 'sobresal, sobresal, sobresalga, sobresalgamos, sobresalid, sobresalgan',
+  },
+  superponer: {
+    pres: 'superpongo, superpones, superpone, superponemos, superponéis, superponen',
+    participle: 'superpuesto',
+  },
+  sobrescribir: { participle: 'sobrescrito' },
+  inscribir: { participle: 'inscrito' },
+  amortiguar: {
+    pret: 'amortigüé, amortiguaste, amortiguó, amortiguamos, amortiguasteis, amortiguaron',
+    subjPres: 'amortigüe, amortigües, amortigüe, amortigüemos, amortigüéis, amortigüen',
+  },
+  promulgar: {
+    pret: 'promulgué, promulgaste, promulgó, promulgamos, promulgasteis, promulgaron',
+  },
+  zurcir: {
+    pres: 'zurzo, zurces, zurce, zurcimos, zurcís, zurcen',
+  },
+  relucir: {
+    pres: 'reluzco, reluces, reluce, relucimos, relucís, relucen',
+  },
+  ejercer: {
+    pres: 'ejerzo, ejerces, ejerce, ejercemos, ejercéis, ejercen',
+    subjPres: 'ejerza, ejerzas, ejerza, ejerzamos, ejerzáis, ejerzan',
+  },
+  extinguir: {
+    pres: 'extingo, extingues, extingue, extinguimos, extinguís, extinguen',
+    subjPres: 'extinga, extingas, extinga, extingamos, extingáis, extingan',
+  },
+  converger: {
+    pres: 'converjo, converges, converge, convergemos, convergéis, convergen',
+  },
 };
 
 let checks = 0;
@@ -531,7 +636,8 @@ for (const [english, options] of Object.entries(VERBS)) {
         failures.push(`${english} -> ${es}: malformed ${key}: ${JSON.stringify(forms)}`);
       }
     }
-    if (!/(ando|iendo|yendo)$/.test(result.gerund)) failures.push(`${es}: odd gerund ${result.gerund}`);
+    // -ñir / -llir verbs absorb the i: teñir -> tiñendo, bullir -> bullendo
+    if (!/(ando|iendo|yendo|(ñ|ll)endo)$/.test(result.gerund)) failures.push(`${es}: odd gerund ${result.gerund}`);
     if (!/(ado|ido|ído|to|cho)$/.test(result.participle)) failures.push(`${es}: odd participle ${result.participle}`);
   }
 }
