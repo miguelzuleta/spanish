@@ -67,7 +67,23 @@
       font: inherit;
       border: 1px solid var(--border);
       border-radius: 6px;
+      -webkit-appearance: none;
+      appearance: none;
+      /* Our own dropdown caret, centered by the background position. */
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2352606d' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.875rem center / 0.75rem 0.5rem;
     }
+
+    /* The browser's own caret is hidden but keeps a fixed 1rem box on the right
+       of the field, so clicking there still opens the list and our caret sits on it. */
+    #verb-input::-webkit-calendar-picker-indicator {
+      width: 1rem;
+      height: 1rem;
+      margin: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    #verb-input::-webkit-list-button { opacity: 0; } /* Safari */
 
     #verb-input:focus-visible,
     .chip:focus-visible,
